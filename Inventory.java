@@ -4,39 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    private LibraryManagement Library;
-    public Inventory(LibraryManagement Library) {
-        this.Library = Library;
+    private LibraryManagement library;
+    public Inventory(LibraryManagement library) {
+        this.library = library;
     }
     public LibraryManagement getLibrary() {
-        return Library;
+        return library;
     }
-    public List<Book> listofAvailableBooks()
+    public List<Book> listOfAvailableBooks()
     {
         List<Book> availableBooks = new ArrayList<>();
-        for (Book B : Library.getBooks())
+        for (Book B : library.getBooks())
         {
-            if(B.getAvailable() == true)
+            if(B.getAvailable())
             {
-               availableBooks.add(B);
+                availableBooks.add(B);
             }
 
         }
         return availableBooks;
 
     }
-    public List<Book> listofBowrroedBooks()
+    public List<Book> listOfBorrowedBooks()
     {
-        List<Book> bowrroedBooks = new ArrayList<>();
-        for (Book B : Library.getBooks())
+        List<Book> borrowedBooks = new ArrayList<>();
+        for (Book B : library.getBooks())
         {
-            if(B.getAvailable() == false)
+            if(!B.getAvailable())
             {
-                bowrroedBooks.add(B);
+                borrowedBooks.add(B);
             }
 
         }
-        return  bowrroedBooks;
+        return borrowedBooks;
 
     }
 }

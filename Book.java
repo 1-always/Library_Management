@@ -4,32 +4,44 @@ public class Book {
     public String  title;
     public String author;
     public String ISBN;
-    public int publicationYear;
+    public String publicationYear;
     public boolean available;
+    public BookType type;
 
-public Book(String title, String author, String ISBN, int publicationYear, boolean available) {
+public Book(String title, String author, String ISBN, String publicationYear, BookType type) {
     this.title = title;
     this.author = author;
     this.ISBN = ISBN;
     this.publicationYear = publicationYear;
-    this.available = available;
+    this.type = type;
 }
     public String getTitle() {return title;}
     public void setTitle(String title) {this.title = title;}
     public String getAuthor() {return author;}
     public void setAuthor(String author) {this.author = author;}
     public String getISBN() {return ISBN;}
-    public int getPublicationYear() {return publicationYear;}
-    public void setPublicationYear(int publicationYear) {this.publicationYear = publicationYear;}
+    public String getPublicationYear() {return publicationYear;}
+    public void setPublicationYear(String publicationYear) {this.publicationYear = publicationYear;}
     public boolean getAvailable() {return available;}
 
+    public BookType getType() {
+        return type;
+    }
 
-    public void checkout()
-    {
-      this.available = false;
+    public void setType(BookType type) {
+        this.type = type;
+    }
+
+    public void checkout() {
+        if (!available) {
+            throw new IllegalStateException("Book" + title + " is not available");
+        }
+        this.available = false;
     }
     public void returnBook()
-    {
+    {   if(available) {
+        throw new IllegalStateException("Book" + title + " is already available");
+    }
         this.available = true;
     }
 

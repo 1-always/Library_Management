@@ -5,16 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Lending {
-   private LibraryManagement Library;
-   public Lending(LibraryManagement Library)
+   private LibraryManagement library;
+   private ReservationSystem reservationSystem;
+   private BookNotifier notifier;
+   public Lending(LibraryManagement library) {}
+   public Lending(LibraryManagement library, ReservationSystem reservationSystem, BookNotifier notifier)
     {
-        this.Library = Library;
+        this.library = library;
+        this.reservationSystem = reservationSystem;
+        this.notifier = notifier;
 
     }
     public void CheckOutBook(Book book ,Patron patron)
     {
-        Patron p = Library.searchPatronById(patron.getId());
-        Book bk = Library.searchBookByISBN((book.getISBN()));
+        Patron p = library.searchPatronById(patron.getId());
+        Book bk = library.searchBookByISBN((book.getISBN()));
         if(bk.getAvailable())
         {
             book.checkout();
@@ -22,7 +27,9 @@ public class Lending {
         }
         else
         {
-            System.out.println("Book Not Available");
+            System.out.println("Book Not Available : Placing reservation for " + p.getName());
+            reservationSystem.reserveBook(book.getISBN(), p);
+            notifier.addObserver(p);
         }
 
 
@@ -31,12 +38,19 @@ public class Lending {
 
     public void returnBook(Book book,Patron patron)
     {
-        Patron p = Library.searchPatronById(patron.getId());
-        Book book1 = Library.searchBookByISBN((book.getISBN()));
-        if(p.getBorrowedBooks().contains(book1));
+        Patron p = library.searchPatronById(patron.getId());
+        Book book1 = library.searchBookByISBN((book.getISBN()));
+        if(p != null && p.getBorrowedBooks().contains(book1))
         {
-            book.returnBook();
+            book1.returnBook();
             p.returnborrowedBook(book1);
+        }
+
+        if(reservationSystem.hasReservations(book1.getISBN())) {
+            Patron next = reservationSystem.getNextReservation(book1.getISBN());
+            if(next != null) {
+                notifier.notifyObservers("Book Returned" + book.getISBN() + " " + book.getTitle());
+            }
         }
     }
 }
